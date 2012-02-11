@@ -41,7 +41,7 @@ class AutoLoginFactory implements SecurityFactoryInterface
      */
     public function getKey()
     {
-        return 'auto-login';
+        return 'jmikola-auto-login';
     }
 
     /**
@@ -61,6 +61,7 @@ class AutoLoginFactory implements SecurityFactoryInterface
 
         $builder
             ->scalarNode('auto_login_user_provider')->defaultNull()->end()
+            ->scalarNode('provider')->end()
             ->scalarNode('token_param')->defaultValue('_al')->end()
         ;
     }
