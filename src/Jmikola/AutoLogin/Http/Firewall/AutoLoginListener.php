@@ -1,7 +1,8 @@
 <?php
 
-namespace Jmikola\AutoLoginBundle\Security;
+namespace Jmikola\AutoLogin\Http\Firewall;
 
+use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;

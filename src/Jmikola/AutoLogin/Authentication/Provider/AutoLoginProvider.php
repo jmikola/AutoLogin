@@ -1,7 +1,9 @@
 <?php
 
-namespace Jmikola\AutoLoginBundle\Security;
+namespace Jmikola\AutoLogin\Authentication\Provider;
 
+use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
+use Jmikola\AutoLogin\User\AutoLoginUserProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;

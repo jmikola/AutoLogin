@@ -1,6 +1,6 @@
 <?php
 
-namespace Jmikola\AutoLoginBundle\Security;
+namespace Jmikola\AutoLogin\User;
 
 interface AutoLoginUserProviderInterface
 {
@@ -14,5 +14,5 @@ interface AutoLoginUserProviderInterface
      * @return UserInterface
      * @throws AutoLoginTokenNotFoundException if the user is not found
      */
-    function loadUserByAutoLoginToken($key);
+    public function loadUserByAutoLoginToken($key);
 }

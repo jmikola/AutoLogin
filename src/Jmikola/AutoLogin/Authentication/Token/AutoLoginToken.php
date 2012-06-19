@@ -1,6 +1,6 @@
 <?php
 
-namespace Jmikola\AutoLoginBundle\Security;
+namespace Jmikola\AutoLogin\Authentication\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 

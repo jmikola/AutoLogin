@@ -1,19 +1,19 @@
 {
-    "name": "jmikola/auto-login-bundle",
-    "type": "symfony-bundle",
-    "description": "Authenticate users in your Symfony2 app via a single query parameter (e.g. email and newsletter links).",
+    "name": "jmikola/auto-login",
+    "type": "library",
+    "description": "Authenticate users in your app via a single query parameter (e.g. email and newsletter links) with Symfony Security component.",
     "keywords": ["authentication", "auto-login", "login", "security"],
-    "homepage": "https://github.com/jmikola/JmikolaAutoLoginBundle",
+    "homepage": "https://github.com/jmikola/AutoLogin",
     "license": "MIT",
     "authors": [
         { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" }
+        { "name": "Henrik Bjornskov", "email": "henrik@bjrnskov.dk" }
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/symfony": ">=2.1.0-dev"
+        "symfony/security": ">=2.1.0-dev"
     },
     "autoload": {
-        "psr-0": { "Jmikola\\AutoLoginBundle": "" }
-    },
-    "target-dir": "Jmikola/AutoLoginBundle"
+        "psr-0": { "Jmikola\\AutoLogin": "src" }
+    }
 }
