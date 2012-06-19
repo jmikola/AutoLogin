@@ -6,7 +6,7 @@
     "homepage": "https://github.com/jmikola/AutoLogin",
     "license": "MIT",
     "authors": [
-        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" }
+        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" },
         { "name": "Henrik Bjornskov", "email": "henrik@bjrnskov.dk" }
     ],
     "require": {
