@@ -10,7 +10,7 @@ interface AutoLoginUserProviderInterface
      * This method must throw AutoLoginTokenNotFoundException if the user is not
      * found.
      *
-     * @param string $autoLoginToken
+     * @param string $key
      * @return UserInterface
      * @throws AutoLoginTokenNotFoundException if the user is not found
      */
