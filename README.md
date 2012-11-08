@@ -7,5 +7,5 @@ login functionality in email and newsletter links.
 ## Compatibility
 
 This library's master branch maintains compatibility with Symfony2's master
-branch. There is no alternate branch for 2.0.x compatilibity.
+branch. There is no alternate branch for 2.0.x compatibility.
 
