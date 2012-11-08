@@ -27,6 +27,8 @@ class AutoLoginProvider implements AuthenticationProviderInterface
      * @param UserCheckerInterface           $userChecker
      * @param string                         $providerKey
      * @param AutoLoginUserProviderInterface $autoLoginUserProvider
+     *
+     * @throws \InvalidArgumentException When $autoLoginUserProvider is null and $userProvider not suitable
      */
     public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, AutoLoginUserProviderInterface $autoLoginUserProvider = null)
     {

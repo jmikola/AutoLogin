@@ -13,8 +13,10 @@ class AutoLoginToken extends AbstractToken
      * Constructor.
      *
      * @param string $providerKey
-     * @param string $autoLoginToken
+     * @param string $key
      * @param array  $roles
+     *
+     * @throws \InvalidArgumentException When $providerKey is empty
      */
     public function __construct($providerKey, $key = null, array $roles = array())
     {
