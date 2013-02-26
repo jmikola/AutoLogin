@@ -6,6 +6,7 @@ login functionality in email and newsletter links.
 
 ## Compatibility
 
-This library's master branch maintains compatibility with Symfony2's master
-branch. There is no alternate branch for 2.0.x compatibility.
+This bundle's `master` branch maintains compatibility with Symfony2's master
+branch. The 1.0.x tag for this bundle tracks its `master` branch.
 
+There is no support for Symfony 2.0.x.
