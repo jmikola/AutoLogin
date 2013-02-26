@@ -1,7 +1,7 @@
 {
     "name": "jmikola/auto-login",
     "type": "library",
-    "description": "Authenticate users in your app via a single query parameter (e.g. email and newsletter links) with Symfony Security component.",
+    "description": "Faciliates automatic login via a single token for Symfony2's Security component.",
     "keywords": ["authentication", "auto-login", "login", "security"],
     "homepage": "https://github.com/jmikola/AutoLogin",
     "license": "MIT",
