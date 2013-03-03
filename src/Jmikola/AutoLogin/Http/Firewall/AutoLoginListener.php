@@ -53,12 +53,12 @@ class AutoLoginListener implements ListenerInterface
 
         $request = $event->getRequest();
 
-        if (!$request->query->has($this->tokenParam)) {
+        if (!$request->request->has($this->tokenParam)) {
             return;
         }
 
         try {
-            $token = new AutoLoginToken($this->providerKey, $request->query->get($this->tokenParam));
+            $token = new AutoLoginToken($this->providerKey, $request->request->get($this->tokenParam));
 
             /* TODO: This authentication method should be considered the same as
              * remember-me according to AuthenticationTrustResolver. That will
