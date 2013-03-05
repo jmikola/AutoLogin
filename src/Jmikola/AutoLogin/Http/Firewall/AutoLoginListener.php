@@ -4,6 +4,7 @@ namespace Jmikola\AutoLogin\Http\Firewall;
 
 use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
@@ -53,7 +54,7 @@ class AutoLoginListener implements ListenerInterface
 
         $request = $event->getRequest();
 
-        if (!$request->has($this->tokenParam)) {
+        if ( ! ($this->isTokenInRequest($request))) {
             return;
         }
 
@@ -65,7 +66,7 @@ class AutoLoginListener implements ListenerInterface
              * entail either refactoring to extend RememberMeToken or adding a
              * service to compose the existing AuthenticationTrustResolver and
              * implement custom logic to respect our own token class.
-             */ 
+             */
             if ($authenticatedToken = $this->authenticationManager->authenticate($token)) {
                 $this->securityContext->setToken($authenticatedToken);
 
@@ -83,5 +84,18 @@ class AutoLoginListener implements ListenerInterface
                 );
             }
         }
+    }
+
+    /**
+     * Check the ParameterBags consulted by Request::get() for the token.
+     *
+     * @param Request $request
+     * @return boolean
+     */
+    private function isTokenInRequest(Request $request)
+    {
+        return $request->query->has($this->tokenParam) ||
+            $request->attributes->has($this->tokenParam) ||
+            $request->request->has($this->tokenParam);
     }
 }
