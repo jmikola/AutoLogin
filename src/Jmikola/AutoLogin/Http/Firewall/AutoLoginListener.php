@@ -3,6 +3,8 @@
 namespace Jmikola\AutoLogin\Http\Firewall;
 
 use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
+use Jmikola\AutoLogin\Event\AlreadyAuthenticatedEvent;
+use Jmikola\AutoLogin\Event\AutoLoginEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -48,18 +50,23 @@ class AutoLoginListener implements ListenerInterface
      */
     public function handle(GetResponseEvent $event)
     {
-        if (null !== $this->securityContext->getToken()) {
-            return;
-        }
-
         $request = $event->getRequest();
 
         if ( ! ($this->isTokenInRequest($request))) {
             return;
         }
 
+        $tokenParam = $request->get($this->tokenParam);
+
+        if (null !== $this->securityContext->getToken()) {
+            $event = new AlreadyAuthenticatedEvent($tokenParam);
+            $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
+
+            return;
+        }
+
         try {
-            $token = new AutoLoginToken($this->providerKey, $request->get($this->tokenParam));
+            $token = new AutoLoginToken($this->providerKey, $tokenParam);
 
             /* TODO: This authentication method should be considered the same as
              * remember-me according to AuthenticationTrustResolver. That will
