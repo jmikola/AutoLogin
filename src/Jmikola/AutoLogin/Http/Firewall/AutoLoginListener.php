@@ -2,9 +2,9 @@
 
 namespace Jmikola\AutoLogin\Http\Firewall;
 
+use Jmikola\AutoLogin\AutoLoginEvents;
 use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
 use Jmikola\AutoLogin\Event\AlreadyAuthenticatedEvent;
-use Jmikola\AutoLogin\Event\AutoLoginEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

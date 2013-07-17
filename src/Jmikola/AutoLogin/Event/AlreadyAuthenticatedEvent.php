@@ -7,11 +7,15 @@ use Symfony\Component\EventDispatcher\Event;
 class AlreadyAuthenticatedEvent extends Event
 {
     /**
+     * The token parameter from the request.
+     *
      * @var string
      */
-    protected $tokenParam;
+    private $tokenParam;
 
     /**
+     * Constructor.
+     *
      * @param string $tokenParam
      */
     public function __construct($tokenParam)
@@ -20,6 +24,8 @@ class AlreadyAuthenticatedEvent extends Event
     }
 
     /**
+     * Return the token parameter.
+     *
      * @return string
      */
     public function getTokenParam()
