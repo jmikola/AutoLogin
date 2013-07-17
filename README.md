@@ -30,7 +30,7 @@ use [JmikolaAutoLoginBundle][]. An example of registering an authentication
 provider and firewall listener manually may be found in the
 [Silex documentation][] and [Security component documentation][].
 
-  [JmikolaAutoLoginBundle]: http://symfony.com/doc/current/book/security.html#using-multiple-user-providers
+  [JmikolaAutoLoginBundle]: https://github.com/jmikola/JmikolaAutoLoginBundle
   [Silex documentation]: http://silex.sensiolabs.org/doc/providers/security.html#defining-a-custom-authentication-provider
   [security component documentation]: http://symfony.com/doc/current/components/security/firewall.html
 
