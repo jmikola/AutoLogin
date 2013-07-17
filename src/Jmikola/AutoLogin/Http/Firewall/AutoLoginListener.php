@@ -58,9 +58,15 @@ class AutoLoginListener implements ListenerInterface
 
         $tokenParam = $request->get($this->tokenParam);
 
+        /* If the security context has a token, a user is already authenticated
+         * and there is nothing to do. Before returning, dispatch an event with
+         * the token parameter so that a listener may track its usage.
+         */
         if (null !== $this->securityContext->getToken()) {
-            $event = new AlreadyAuthenticatedEvent($tokenParam);
-            $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
+            if (null !== $this->dispatcher) {
+                $event = new AlreadyAuthenticatedEvent($tokenParam);
+                $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
+            }
 
             return;
         }
@@ -78,8 +84,8 @@ class AutoLoginListener implements ListenerInterface
                 $this->securityContext->setToken($authenticatedToken);
 
                 if (null !== $this->dispatcher) {
-                    $loginEvent = new InteractiveLoginEvent($request, $authenticatedToken);
-                    $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+                    $event = new InteractiveLoginEvent($request, $authenticatedToken);
+                    $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $event);
                 }
             }
         } catch (AuthenticationException $e) {
