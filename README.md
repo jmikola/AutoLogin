@@ -57,3 +57,26 @@ The firewall listener may dispatch events if constructed with an
 Upon successful authentication by a token parameter in the request, an
 interactive login core event will be dispatched with the authenticated
 `AutoLoginToken` instance.
+
+#### Already Authenticated
+
+*This event was contributed by [Antonio Trapani][] in [PR #9][].*
+
+If a token parameter is present in the request, but the user is already
+authenticated, a custom event will be dispatched, which includes the token's
+value. After dispatching this event, the listener will return immediately, since
+there is no work to be done.
+
+A practical use for this event would be to mark user's email addresses as
+confirmed, assuming the auto-login link with the token was only delivered via
+email. As a business requirement, the confirmation service might also listen to
+the interactive login core event and operate when the authenticated token was an
+`AutoLoginToken` instance.
+
+**Note:** Unlike the interactive login event, the token parameter in this event
+will not have been validated. It will be the responsibility of the listener to
+check whether it matches the currently authenticated user. For this reason, it
+may be helpful to inject this library's provider class.
+
+  [Antonio Trapani]: https://github.com/TwistedLogic
+  [PR #9]: https://github.com/jmikola/AutoLogin/pull/9
