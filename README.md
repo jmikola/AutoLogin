@@ -64,10 +64,10 @@ interactive login core event will be dispatched with the authenticated
 
 If a token parameter is present in the request, but the user is already
 authenticated, a custom event will be dispatched, which includes the token's
-value. After dispatching this event, the listener will return immediately, since
-there is no work to be done.
+value. After dispatching this event, the listener's default behavior is to
+return immediately, since there is likely no work to be done.
 
-A practical use for this event would be to mark user's email addresses as
+A practical use for this event would be to mark a user's email addresses as
 confirmed, assuming the auto-login link with the token was only delivered via
 email. As a business requirement, the confirmation service might also listen to
 the interactive login core event and operate when the authenticated token was an
@@ -80,3 +80,17 @@ may be helpful to inject this library's provider class.
 
   [Antonio Trapani]: https://github.com/TwistedLogic
   [PR #9]: https://github.com/jmikola/AutoLogin/pull/9
+
+#### Overriding Already Authenticated Users
+
+*This feature was contributed by [Mathieu Gauthier-Lafaye][] in [PR #10][].*
+
+By default, the listener will only dispatch an event if the user is already
+authenticated; it does not override the existing authenticated user. In some
+cases, it may be desirable to allow an auto-login link to override an existing
+authenticated user. Otherwise, the user would first need to log out before using
+the auto-login link. Setting the listener's `override_already_authenticated`
+boolean option to `true` will enable this behavior.
+
+  [Mathieu Gauthier-Lafaye]: https://github.com/gauthierl
+  [PR #10]: https://github.com/jmikola/AutoLogin/pull/10

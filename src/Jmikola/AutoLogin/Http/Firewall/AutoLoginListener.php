@@ -24,9 +24,10 @@ class AutoLoginListener implements ListenerInterface
     private $providerKey;
     private $securityContext;
     private $tokenParam;
+    private $options;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param SecurityContextInterface       $securityContext
      * @param AuthenticationManagerInterface $authenticationManager
@@ -34,8 +35,9 @@ class AutoLoginListener implements ListenerInterface
      * @param string                         $tokenParam
      * @param LoggerInterface                $logger
      * @param EventDispatcherInterface       $dispatcher
+     * @param array                          $options
      */
-    public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null)
+    public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
     {
         $this->securityContext = $securityContext;
         $this->authenticationManager = $authenticationManager;
@@ -43,6 +45,10 @@ class AutoLoginListener implements ListenerInterface
         $this->tokenParam = $tokenParam;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
+
+        $this->options = $options = array_merge(array(
+            'override_already_authenticated' => false,
+        ), $options);
     }
 
     /**
@@ -58,9 +64,9 @@ class AutoLoginListener implements ListenerInterface
 
         $tokenParam = $request->get($this->tokenParam);
 
-        /* If the security context has a token, a user is already authenticated
-         * and there is nothing to do. Before returning, dispatch an event with
-         * the token parameter so that a listener may track its usage.
+        /* If the security context has a token, a user is already authenticated.
+         * We will dispatch an event with the token parameter so that a listener
+         * may track its usage.
          */
         if (null !== $this->securityContext->getToken()) {
             if (null !== $this->dispatcher) {
@@ -68,7 +74,14 @@ class AutoLoginListener implements ListenerInterface
                 $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
             }
 
-            return;
+            /* By default, ignore the token and return; however, in some cases
+             * it may be useful to override the existing token and allow the
+             * AutoLogin token to be used to switch users (without requiring
+             * the user to first log out).
+             */
+            if ( ! $this->options['override_already_authenticated']) {
+                return;
+            }
         }
 
         try {
