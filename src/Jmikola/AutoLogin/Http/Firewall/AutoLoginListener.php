@@ -27,7 +27,7 @@ class AutoLoginListener implements ListenerInterface
     private $options;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param SecurityContextInterface       $securityContext
      * @param AuthenticationManagerInterface $authenticationManager
@@ -45,7 +45,10 @@ class AutoLoginListener implements ListenerInterface
         $this->tokenParam = $tokenParam;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
-        $this->options = $options;
+
+        $this->options = $options = array_merge(array(
+            'override_already_authenticated' => false,
+        ), $options);
     }
 
     /**
@@ -70,13 +73,13 @@ class AutoLoginListener implements ListenerInterface
                 $event = new AlreadyAuthenticatedEvent($tokenParam);
                 $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
             }
-            
-            if ( ! array_key_exists('on_already_authenticated', $this->options) or 
-                 $this->options['on_already_authenticated'] !== 'override' ) {
-                /* The default behavior is ignore the token by exiting the function.
-                 * But in some cases, it can be useful to overide the authentication
-                 * without forcing the user to logout.
-                 */
+
+            /* By default, ignore the token and return; however, in some cases
+             * it may be useful to override the existing token and allow the
+             * AutoLogin token to be used to switch users (without requiring
+             * the user to first log out).
+             */
+            if ( ! $this->options['override_already_authenticated']) {
                 return;
             }
         }
