@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class AutoLoginProvider implements AuthenticationProviderInterface
@@ -56,7 +57,12 @@ class AutoLoginProvider implements AuthenticationProviderInterface
             return;
         }
 
-        $user = $this->autoLoginUserProvider->loadUserByAutoLoginToken($token->getKey());
+        $user = $token->getUser();
+
+        if ( ! $user instanceof UserInterface) {
+            $user = $this->autoLoginUserProvider->loadUserByAutoLoginToken($token->getKey());
+        }
+
         $this->userChecker->checkPostAuth($user);
 
         $authenticatedToken = new AutoLoginToken($this->providerKey, null, $user->getRoles());
