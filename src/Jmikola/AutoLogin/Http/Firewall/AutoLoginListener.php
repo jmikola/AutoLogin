@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\SecurityEvents;
@@ -29,16 +30,21 @@ class AutoLoginListener implements ListenerInterface
     /**
      * Constructor.
      *
-     * @param SecurityContextInterface       $securityContext
-     * @param AuthenticationManagerInterface $authenticationManager
-     * @param string                         $providerKey
-     * @param string                         $tokenParam
-     * @param LoggerInterface                $logger
-     * @param EventDispatcherInterface       $dispatcher
-     * @param array                          $options
+     * @param TokenStorageInterface|SecurityContextInterface $securityContext
+     * @param AuthenticationManagerInterface                 $authenticationManager
+     * @param string                                         $providerKey
+     * @param string                                         $tokenParam
+     * @param LoggerInterface                                $logger
+     * @param EventDispatcherInterface                       $dispatcher
+     * @param array                                          $options
      */
-    public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
+    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
     {
+        if (false === ($securityContext instanceof SecurityContextInterface)
+            && false === ($securityContext instanceof TokenStorageInterface)) {
+            throw new \InvalidArgumentException('Argument 1 passed to '.__CLASS__.'::'.__FUNCTION__.' must be an instance of Symfony\Component\Security\Core\SecurityContextInterface or Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface');
+        }
+
         $this->securityContext = $securityContext;
         $this->authenticationManager = $authenticationManager;
         $this->providerKey = $providerKey;
