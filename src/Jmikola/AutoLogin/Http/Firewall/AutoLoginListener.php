@@ -81,6 +81,7 @@ class AutoLoginListener implements ListenerInterface
      */
     public function handle(GetResponseEvent $event)
     {
+        $requestEvent = $event;
         $request = $event->getRequest();
 
         if ( ! ($this->isTokenInRequest($request))) {
@@ -123,7 +124,7 @@ class AutoLoginListener implements ListenerInterface
 
                 //return response to redirect after successful login
                 $response = $this->successHandler->onAuthenticationSuccess($request, $authenticatedToken);
-                $event->setResponse($response);
+                $requestEvent->setResponse($response);
                 if (null !== $this->rememberMeServices) {
                     //set remember me cookies
                     $this->rememberMeServices->loginSuccess($request, $response, $authenticatedToken);
