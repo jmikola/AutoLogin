@@ -1,5 +1,5 @@
 {
-    "name": "jmikola/auto-login",
+    "name": "cmyker/auto-login",
     "type": "library",
     "description": "Faciliates automatic login via a single token for Symfony2's Security component.",
     "keywords": ["authentication", "auto-login", "login", "security"],
