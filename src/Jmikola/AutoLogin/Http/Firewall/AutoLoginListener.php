@@ -13,11 +13,11 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
-use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 
 class AutoLoginListener implements ListenerInterface
 {
@@ -79,10 +79,9 @@ class AutoLoginListener implements ListenerInterface
     /**
      * @see Symfony\Component\Security\Http\Firewall\ListenerInterface::handle()
      */
-    public function handle(GetResponseEvent $event)
+    public function handle(GetResponseEvent $requestEvent)
     {
-        $requestEvent = $event;
-        $request = $event->getRequest();
+        $request = $requestEvent->getRequest();
 
         if ( ! ($this->isTokenInRequest($request))) {
             return;
