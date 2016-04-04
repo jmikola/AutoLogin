@@ -5,10 +5,10 @@ namespace Jmikola\AutoLogin\Http\Firewall;
 use Jmikola\AutoLogin\AutoLoginEvents;
 use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
 use Jmikola\AutoLogin\Event\AlreadyAuthenticatedEvent;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -113,7 +113,7 @@ class AutoLoginListener implements ListenerInterface
             }
         } catch (AuthenticationException $e) {
             if (null !== $this->logger) {
-                $this->logger->warn(
+                $this->logger->warning(
                     'SecurityContext not populated with auto-login token as the '.
                     'AuthenticationManager rejected the auto-login token created '.
                     'by AutoLoginListener: '.$e->getMessage()
