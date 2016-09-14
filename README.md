@@ -17,7 +17,7 @@ $ composer require jmikola/auto-login=~1.0
 
 ### Compatibility
 
-This library requires Symfony 2.1 or above. There is no support for Symfony 2.0.
+This library requires Symfony 2.2 or above.
 
 ## Usage
 
