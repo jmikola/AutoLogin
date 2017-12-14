@@ -9,7 +9,7 @@ login functionality in email and newsletter links.
 The library is published as a [package][] and is installable via [Composer][]:
 
 ```
-$ composer require jmikola/auto-login=~1.0
+$ composer require jmikola/auto-login
 ```
 
   [package]: https://packagist.org/packages/jmikola/auto-login
