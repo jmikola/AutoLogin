@@ -14,8 +14,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 
 class AutoLoginListener implements ListenerInterface
 {
@@ -26,6 +28,8 @@ class AutoLoginListener implements ListenerInterface
     private $securityContext;
     private $tokenParam;
     private $options;
+    private $successHandler;
+    private $rememberMeServices;
 
     /**
      * Constructor.
@@ -38,7 +42,7 @@ class AutoLoginListener implements ListenerInterface
      * @param EventDispatcherInterface                       $dispatcher
      * @param array                                          $options
      */
-    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
+    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, AuthenticationSuccessHandlerInterface $successHandler, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
     {
         if (!($securityContext instanceof SecurityContextInterface) &&
             !($securityContext instanceof TokenStorageInterface)) {
@@ -53,6 +57,7 @@ class AutoLoginListener implements ListenerInterface
         $this->authenticationManager = $authenticationManager;
         $this->providerKey = $providerKey;
         $this->tokenParam = $tokenParam;
+        $this->successHandler = $successHandler;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
 
@@ -62,11 +67,21 @@ class AutoLoginListener implements ListenerInterface
     }
 
     /**
+     * Sets the RememberMeServices implementation to use.
+     *
+     * @param RememberMeServicesInterface $rememberMeServices
+     */
+    public function setRememberMeServices(RememberMeServicesInterface $rememberMeServices)
+    {
+        $this->rememberMeServices = $rememberMeServices;
+    }
+
+    /**
      * @see Symfony\Component\Security\Http\Firewall\ListenerInterface::handle()
      */
-    public function handle(GetResponseEvent $event)
+    public function handle(GetResponseEvent $requestEvent)
     {
-        $request = $event->getRequest();
+        $request = $requestEvent->getRequest();
 
         if ( ! ($this->isTokenInRequest($request))) {
             return;
@@ -105,6 +120,14 @@ class AutoLoginListener implements ListenerInterface
              */
             if ($authenticatedToken = $this->authenticationManager->authenticate($token)) {
                 $this->securityContext->setToken($authenticatedToken);
+
+                //return response to redirect after successful login
+                $response = $this->successHandler->onAuthenticationSuccess($request, $authenticatedToken);
+                $requestEvent->setResponse($response);
+                if (null !== $this->rememberMeServices) {
+                    //set remember me cookies
+                    $this->rememberMeServices->loginSuccess($request, $response, $authenticatedToken);
+                }
 
                 if (null !== $this->dispatcher) {
                     $event = new InteractiveLoginEvent($request, $authenticatedToken);
