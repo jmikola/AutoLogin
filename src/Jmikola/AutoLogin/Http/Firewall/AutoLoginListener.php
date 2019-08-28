@@ -8,16 +8,14 @@ use Jmikola\AutoLogin\Event\AlreadyAuthenticatedEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
-class AutoLoginListener implements ListenerInterface
+class AutoLoginListener
 {
     private $authenticationManager;
     private $dispatcher;
@@ -30,7 +28,7 @@ class AutoLoginListener implements ListenerInterface
     /**
      * Constructor.
      *
-     * @param TokenStorageInterface|SecurityContextInterface $securityContext
+     * @param TokenStorageInterface                          $securityContext
      * @param AuthenticationManagerInterface                 $authenticationManager
      * @param string                                         $providerKey
      * @param string                                         $tokenParam
@@ -38,17 +36,8 @@ class AutoLoginListener implements ListenerInterface
      * @param EventDispatcherInterface                       $dispatcher
      * @param array                                          $options
      */
-    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
+    public function __construct(TokenStorageInterface $securityContext, AuthenticationManagerInterface $authenticationManager, string $providerKey, string $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
     {
-        if (!($securityContext instanceof SecurityContextInterface) &&
-            !($securityContext instanceof TokenStorageInterface)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Argument 1 passed to %s() must be an instance of Symfony\Component\Security\Core\SecurityContextInterface or Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface, %s given',
-                __METHOD__,
-                is_object($securityContext) ? get_class($securityContext) : gettype($securityContext)
-            ));
-        }
-
         $this->securityContext = $securityContext;
         $this->authenticationManager = $authenticationManager;
         $this->providerKey = $providerKey;
@@ -62,9 +51,9 @@ class AutoLoginListener implements ListenerInterface
     }
 
     /**
-     * @see Symfony\Component\Security\Http\Firewall\ListenerInterface::handle()
+     * @param RequestEvent $event
      */
-    public function handle(GetResponseEvent $event)
+    public function __invoke(RequestEvent $event)
     {
         $request = $event->getRequest();
 
@@ -80,8 +69,10 @@ class AutoLoginListener implements ListenerInterface
          */
         if (null !== $this->securityContext->getToken()) {
             if (null !== $this->dispatcher) {
-                $event = new AlreadyAuthenticatedEvent($tokenParam);
-                $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
+                $this->dispatcher->dispatch(
+                    new AlreadyAuthenticatedEvent($tokenParam),
+                    AutoLoginEvents::ALREADY_AUTHENTICATED
+                );
             }
 
             /* By default, ignore the token and return; however, in some cases
@@ -107,8 +98,10 @@ class AutoLoginListener implements ListenerInterface
                 $this->securityContext->setToken($authenticatedToken);
 
                 if (null !== $this->dispatcher) {
-                    $event = new InteractiveLoginEvent($request, $authenticatedToken);
-                    $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $event);
+                    $this->dispatcher->dispatch(
+                        new InteractiveLoginEvent($request, $authenticatedToken),
+                        SecurityEvents::INTERACTIVE_LOGIN
+                    );
                 }
             }
         } catch (AuthenticationException $e) {
@@ -128,7 +121,7 @@ class AutoLoginListener implements ListenerInterface
      * @param Request $request
      * @return boolean
      */
-    private function isTokenInRequest(Request $request)
+    private function isTokenInRequest(Request $request) : bool
     {
         return $request->query->has($this->tokenParam) ||
             $request->attributes->has($this->tokenParam) ||

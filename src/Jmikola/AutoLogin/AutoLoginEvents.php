@@ -14,5 +14,5 @@ final class AutoLoginEvents
      *
      * @var string
      */
-    const ALREADY_AUTHENTICATED = 'autologin.already_authenticated';
+    public const ALREADY_AUTHENTICATED = 'autologin.already_authenticated';
 }

@@ -18,7 +18,7 @@ class AutoLoginToken extends AbstractToken
      *
      * @throws \InvalidArgumentException When $providerKey is empty
      */
-    public function __construct($providerKey, $key = null, array $roles = array())
+    public function __construct(string $providerKey, string $key = null, array $roles = array())
     {
         parent::__construct($roles);
 
@@ -30,12 +30,18 @@ class AutoLoginToken extends AbstractToken
         $this->key = $key;
     }
 
-    public function getKey()
+    /**
+     * @return string|null
+     */
+    public function getKey() : ?string
     {
         return $this->key;
     }
 
-    public function getProviderKey()
+    /**
+     * @return string
+     */
+    public function getProviderKey() : string
     {
         return $this->providerKey;
     }
@@ -43,7 +49,7 @@ class AutoLoginToken extends AbstractToken
     /**
      * @see Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getCredentials()
      */
-    public function getCredentials()
+    public function getCredentials() : string
     {
         return '';
     }
@@ -65,7 +71,7 @@ class AutoLoginToken extends AbstractToken
      */
     public function unserialize($str)
     {
-        list($this->key, $this->providerKey, $parentStr) = unserialize($str);
+        [$this->key, $this->providerKey, $parentStr] = unserialize($str);
         parent::unserialize($parentStr);
     }
 }
