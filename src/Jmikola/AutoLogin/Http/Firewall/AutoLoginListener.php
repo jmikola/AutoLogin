@@ -36,7 +36,7 @@ class AutoLoginListener
      * @param EventDispatcherInterface                       $dispatcher
      * @param array                                          $options
      */
-    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
+    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, string $providerKey, string $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
     {
         if (!$securityContext instanceof TokenStorageInterface) {
             throw new \InvalidArgumentException(sprintf(
@@ -77,8 +77,10 @@ class AutoLoginListener
          */
         if (null !== $this->securityContext->getToken()) {
             if (null !== $this->dispatcher) {
-                $event = new AlreadyAuthenticatedEvent($tokenParam);
-                $this->dispatcher->dispatch(AutoLoginEvents::ALREADY_AUTHENTICATED, $event);
+                $this->dispatcher->dispatch(
+                    new AlreadyAuthenticatedEvent($tokenParam),
+                    AutoLoginEvents::ALREADY_AUTHENTICATED
+                );
             }
 
             /* By default, ignore the token and return; however, in some cases
@@ -104,8 +106,10 @@ class AutoLoginListener
                 $this->securityContext->setToken($authenticatedToken);
 
                 if (null !== $this->dispatcher) {
-                    $event = new InteractiveLoginEvent($request, $authenticatedToken);
-                    $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $event);
+                    $this->dispatcher->dispatch(
+                        new InteractiveLoginEvent($request, $authenticatedToken),
+                        SecurityEvents::INTERACTIVE_LOGIN
+                    );
                 }
             }
         } catch (AuthenticationException $e) {
@@ -125,7 +129,7 @@ class AutoLoginListener
      * @param Request $request
      * @return boolean
      */
-    private function isTokenInRequest(Request $request)
+    private function isTokenInRequest(Request $request) : bool
     {
         return $request->query->has($this->tokenParam) ||
             $request->attributes->has($this->tokenParam) ||

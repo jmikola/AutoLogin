@@ -2,9 +2,7 @@
 
 namespace Jmikola\AutoLogin\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
-class AlreadyAuthenticatedEvent extends Event
+class AlreadyAuthenticatedEvent
 {
     /**
      * The token parameter from the request.
@@ -18,7 +16,7 @@ class AlreadyAuthenticatedEvent extends Event
      *
      * @param string $tokenParam
      */
-    public function __construct($tokenParam)
+    public function __construct(string $tokenParam)
     {
         $this->tokenParam = $tokenParam;
     }
@@ -28,7 +26,7 @@ class AlreadyAuthenticatedEvent extends Event
      *
      * @return string
      */
-    public function getTokenParam()
+    public function getTokenParam() : string
     {
         return $this->tokenParam;
     }
