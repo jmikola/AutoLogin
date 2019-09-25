@@ -36,16 +36,8 @@ class AutoLoginListener
      * @param EventDispatcherInterface                       $dispatcher
      * @param array                                          $options
      */
-    public function __construct($securityContext, AuthenticationManagerInterface $authenticationManager, string $providerKey, string $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
+    public function __construct(TokenStorageInterface $securityContext, AuthenticationManagerInterface $authenticationManager, string $providerKey, string $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
     {
-        if (!$securityContext instanceof TokenStorageInterface) {
-            throw new \InvalidArgumentException(sprintf(
-                'Argument 1 passed to %s() must be an instance of Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface, %s given',
-                __METHOD__,
-                is_object($securityContext) ? get_class($securityContext) : gettype($securityContext)
-            ));
-        }
-
         $this->securityContext = $securityContext;
         $this->authenticationManager = $authenticationManager;
         $this->providerKey = $providerKey;
