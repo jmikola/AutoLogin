@@ -6,7 +6,6 @@ use Jmikola\AutoLogin\Authentication\Token\AutoLoginToken;
 use Jmikola\AutoLogin\User\AutoLoginUserProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -33,7 +32,6 @@ class AutoLoginProvider implements AuthenticationProviderInterface
      */
     public function __construct(UserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, AutoLoginUserProviderInterface $autoLoginUserProvider = null)
     {
-        $this->userProvider = $userProvider;
         $this->userChecker = $userChecker;
         $this->providerKey = $providerKey;
 
@@ -49,6 +47,8 @@ class AutoLoginProvider implements AuthenticationProviderInterface
     }
 
     /**
+     * @param TokenInterface $token
+     *
      * @see Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface::authenticate()
      */
     public function authenticate(TokenInterface $token)
@@ -74,7 +74,9 @@ class AutoLoginProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * @see Symfony\Component\Security\Core\Authentication\Provider\uthenticationProviderInterface::supports()
+     * @param TokenInterface $token
+     *
+     * @see Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface::supports()
      */
     public function supports(TokenInterface $token)
     {

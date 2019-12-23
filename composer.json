@@ -10,18 +10,18 @@
         { "name": "Henrik Bjornskov", "email": "henrik@bjrnskov.dk" }
     ],
     "require": {
-        "php": ">=5.3.2",
+        "php": ">=7.1",
         "psr/log": "^1.0",
-        "symfony/event-dispatcher": "^2.2 || ^3.0 || ^4.0",
-        "symfony/http-kernel": "^2.2 || ^3.0 || ^4.0",
-        "symfony/security": "^2.2 || ^3.0 || ^4.0"
+        "symfony/event-dispatcher": "^4.3",
+        "symfony/http-kernel": "^4.3",
+        "symfony/security": "^4.3"
     },
     "autoload": {
         "psr-0": { "Jmikola\\AutoLogin": "src" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Jmikola\AutoLogin\User;
 
+use Jmikola\AutoLogin\Exception\AutoLoginTokenNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 interface AutoLoginUserProviderInterface
 {
     /**
@@ -14,5 +17,5 @@ interface AutoLoginUserProviderInterface
      * @return UserInterface
      * @throws AutoLoginTokenNotFoundException if the user is not found
      */
-    public function loadUserByAutoLoginToken($key);
+    public function loadUserByAutoLoginToken($key) : UserInterface;
 }
