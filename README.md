@@ -17,7 +17,7 @@ $ composer require jmikola/auto-login
 
 ### Compatibility
 
-This library requires Symfony 2.2 or above.
+This library requires Symfony 4.3 or above.
 
 ## Usage
 
@@ -28,10 +28,9 @@ and automatically authenticate users based on a single request parameter.
 To utilize this library in a full-stack Symfony application, you may want to
 use [JmikolaAutoLoginBundle][]. An example of registering an authentication
 provider and firewall listener manually may be found in the
-[Silex documentation][] and [Security component documentation][].
+[Security component documentation][].
 
   [JmikolaAutoLoginBundle]: https://github.com/jmikola/JmikolaAutoLoginBundle
-  [Silex documentation]: http://silex.sensiolabs.org/doc/providers/security.html#defining-a-custom-authentication-provider
   [security component documentation]: http://symfony.com/doc/current/components/security/firewall.html
 
 ### Token
