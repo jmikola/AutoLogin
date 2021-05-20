@@ -20,12 +20,12 @@ class AutoLoginListenerTest extends TestCase
     private const TOKEN = 'test-token';
 
     /**
-     * @return MockObject|TokenStorageInterface
+     * @var MockObject|TokenStorageInterface
      */
     private $securityContextMock;
 
     /**
-     * @return MockObject|AuthenticationManagerInterface
+     * @var MockObject|AuthenticationManagerInterface
      */
     private $authenticationManagerMock;
 
