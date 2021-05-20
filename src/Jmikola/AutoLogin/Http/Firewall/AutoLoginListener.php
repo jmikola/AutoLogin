@@ -18,13 +18,40 @@ use Symfony\Component\Security\Http\Firewall\AbstractListener;
 
 class AutoLoginListener extends AbstractListener
 {
-    private TokenStorageInterface $tokenStorage;
-    private AuthenticationManagerInterface $authenticationManager;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var AuthenticationManagerInterface
+     */
+    private $authenticationManager;
+
+    /**
+     * @var string
+     */
     private string $providerKey;
+
+    /**
+     * @var string
+     */
     private string $tokenParam;
-    private ?LoggerInterface $logger = null;
-    private ?EventDispatcherInterface $dispatcher = null;
-    private array $options;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    private $logger = null;
+
+    /**
+     * @var EventDispatcherInterface|null
+     */
+    private $dispatcher = null;
+
+    /**
+     * @var array
+     */
+    private $options;
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
