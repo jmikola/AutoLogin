@@ -22,7 +22,7 @@ class AutoLoginListenerTest extends TestCase
     /**
      * @var MockObject|TokenStorageInterface
      */
-    private $securityContextMock;
+    private $tokenStorageMock;
 
     /**
      * @var MockObject|AuthenticationManagerInterface
@@ -31,7 +31,7 @@ class AutoLoginListenerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->securityContextMock = $this->createMock(TokenStorageInterface::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $this->authenticationManagerMock = $this->createMock(AuthenticationManagerInterface::class);
     }
 
@@ -45,7 +45,7 @@ class AutoLoginListenerTest extends TestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->expectSecurityContextGetTokenNotCalled();
+        $this->expectTokenStorageGetTokenNotCalled();
         $this->expectAuthenticationManagerAuthenticateNotCalled();
 
         $listener->__invoke($event);
@@ -61,7 +61,7 @@ class AutoLoginListenerTest extends TestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->expectSecurityContextGetToken();
+        $this->expectTokenStorageGetToken();
         $this->expectAuthenticationManagerAuthenticateNotCalled();
 
         $listener->__invoke($event);
@@ -79,7 +79,7 @@ class AutoLoginListenerTest extends TestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->expectSecurityContextGetToken();
+        $this->expectTokenStorageGetToken();
         $this->expectShouldAuthenticateUser();
 
         $listener->__invoke($event);
@@ -88,7 +88,7 @@ class AutoLoginListenerTest extends TestCase
     private function createListener(array $options): AutoLoginListener
     {
         return new AutoLoginListener(
-            $this->securityContextMock,
+            $this->tokenStorageMock,
             $this->authenticationManagerMock,
             self::PROVIDER_KEY,
             self::TOKEN_KEY,
@@ -98,17 +98,17 @@ class AutoLoginListenerTest extends TestCase
         );
     }
 
-    private function expectSecurityContextGetTokenNotCalled(): void
+    private function expectTokenStorageGetTokenNotCalled(): void
     {
-        $this->securityContextMock
+        $this->tokenStorageMock
             ->expects(self::never())
             ->method('getToken')
         ;
     }
 
-    private function expectSecurityContextGetToken(): void
+    private function expectTokenStorageGetToken(): void
     {
-        $this->securityContextMock
+        $this->tokenStorageMock
             ->expects(self::once())
             ->method('getToken')
             ->willReturn($this->createMock(TokenInterface::class))
@@ -134,7 +134,7 @@ class AutoLoginListenerTest extends TestCase
             ->willReturn($token)
         ;
 
-        $this->securityContextMock
+        $this->tokenStorageMock
             ->expects(self::once())
             ->method('setToken')
             ->with($token)

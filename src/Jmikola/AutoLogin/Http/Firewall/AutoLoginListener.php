@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Firewall\AbstractListener;
 
 class AutoLoginListener extends AbstractListener
 {
-    private TokenStorageInterface $securityContext;
+    private TokenStorageInterface $tokenStorage;
     private AuthenticationManagerInterface $authenticationManager;
     private string $providerKey;
     private string $tokenParam;
@@ -27,7 +27,7 @@ class AutoLoginListener extends AbstractListener
     private array $options;
 
     public function __construct(
-        TokenStorageInterface $securityContext,
+        TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
         string $providerKey,
         string $tokenParam,
@@ -35,7 +35,7 @@ class AutoLoginListener extends AbstractListener
         EventDispatcherInterface $dispatcher = null,
         array $options = []
     ) {
-        $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->providerKey = $providerKey;
         $this->tokenParam = $tokenParam;
@@ -69,7 +69,7 @@ class AutoLoginListener extends AbstractListener
          * We will dispatch an event with the token parameter so that a listener
          * may track its usage.
          */
-        if (null !== $this->securityContext->getToken()) {
+        if (null !== $this->tokenStorage->getToken()) {
             if (null !== $this->dispatcher) {
                 $this->dispatcher->dispatch(
                     new AlreadyAuthenticatedEvent($tokenParam),
@@ -97,7 +97,7 @@ class AutoLoginListener extends AbstractListener
              * implement custom logic to respect our own token class.
              */
             if ($authenticatedToken = $this->authenticationManager->authenticate($token)) {
-                $this->securityContext->setToken($authenticatedToken);
+                $this->tokenStorage->setToken($authenticatedToken);
 
                 if (null !== $this->dispatcher) {
                     $this->dispatcher->dispatch(
@@ -109,7 +109,7 @@ class AutoLoginListener extends AbstractListener
         } catch (AuthenticationException $e) {
             if (null !== $this->logger) {
                 $this->logger->warning(
-                    'SecurityContext not populated with auto-login token as the '.
+                    'TokenStorage not populated with auto-login token as the '.
                     'AuthenticationManager rejected the auto-login token created '.
                     'by AutoLoginListener: '.$e->getMessage()
                 );
