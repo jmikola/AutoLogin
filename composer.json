@@ -1,7 +1,7 @@
 {
     "name": "jmikola/auto-login",
     "type": "library",
-    "description": "Faciliates automatic login via a single token for Symfony's Security component.",
+    "description": "Facilitates automatic login via a single token for Symfony's Security component.",
     "keywords": ["authentication", "auto-login", "login", "security"],
     "homepage": "https://github.com/jmikola/AutoLogin",
     "license": "MIT",
