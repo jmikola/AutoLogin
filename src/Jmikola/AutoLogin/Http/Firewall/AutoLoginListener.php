@@ -31,12 +31,12 @@ class AutoLoginListener extends AbstractListener
     /**
      * @var string
      */
-    private string $providerKey;
+    private $providerKey;
 
     /**
      * @var string
      */
-    private string $tokenParam;
+    private $tokenParam;
 
     /**
      * @var LoggerInterface|null
