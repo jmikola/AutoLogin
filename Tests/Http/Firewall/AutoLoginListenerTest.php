@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\AutoLogin\Http\Firewall;
+namespace Jmikola\AutoLogin\Tests\Http\Firewall;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;

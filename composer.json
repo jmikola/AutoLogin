@@ -19,6 +19,9 @@
     "autoload": {
         "psr-0": { "Jmikola\\AutoLogin": "src" }
     },
+    "autoload-dev": {
+        "psr-4": { "Jmikola\\AutoLogin\\Tests\\": "Tests/" }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
