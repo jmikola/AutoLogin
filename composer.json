@@ -17,7 +17,7 @@
         "symfony/security": "^4.4 || ^5.0"
     },
     "autoload": {
-        "psr-0": { "Jmikola\\AutoLogin": "src" }
+        "psr-4": { "Jmikola\\AutoLogin\\": "src/" }
     },
     "autoload-dev": {
         "psr-4": { "Jmikola\\AutoLogin\\Tests\\": "Tests/" }
