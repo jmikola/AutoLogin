@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   phpunit:
     name: "PHPUnit tests"
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-20.04"
 
     strategy:
       fail-fast: true
@@ -25,14 +25,21 @@ jobs:
           php-version: "${{ matrix.php }}"
           coverage: "none"
 
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
+      - name: "Cache composer dependencies"
+        uses: "actions/cache@v2"
         with:
           path: "~/.composer/cache"
-          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ matrix.php }}-composer-
+          key: "${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}"
+          restore-keys: "${{ matrix.php }}-composer-"
 
-      - name: Install dependencies
+      - name: "Cache phpunit dependencies"
+        uses: "actions/cache@v2"
+        with:
+          path: "./vendor/bin/.phpunit"
+          key: "${{ matrix.php }}-phpunit-${{ hashFiles('**/composer.lock') }}"
+          restore-keys: "${{ matrix.php }}-phpunit-"
+
+      - name: "Install dependencies"
         run: |
           echo "::group::composer update"
           composer update --no-interaction --no-progress ${{ matrix.composer-args }}
