@@ -14,60 +14,89 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Firewall\AbstractListener;
 
-class AutoLoginListener
+class AutoLoginListener extends AbstractListener
 {
-    private $authenticationManager;
-    private $dispatcher;
-    private $logger;
-    private $providerKey;
-    private $securityContext;
-    private $tokenParam;
-    private $options;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
 
     /**
-     * Constructor.
-     *
-     * @param TokenStorageInterface                          $securityContext
-     * @param AuthenticationManagerInterface                 $authenticationManager
-     * @param string                                         $providerKey
-     * @param string                                         $tokenParam
-     * @param LoggerInterface                                $logger
-     * @param EventDispatcherInterface                       $dispatcher
-     * @param array                                          $options
+     * @var AuthenticationManagerInterface
      */
-    public function __construct(TokenStorageInterface $securityContext, AuthenticationManagerInterface $authenticationManager, string $providerKey, string $tokenParam, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, array $options = array())
-    {
-        $this->securityContext = $securityContext;
+    private $authenticationManager;
+
+    /**
+     * @var string
+     */
+    private $providerKey;
+
+    /**
+     * @var string
+     */
+    private $tokenParam;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    private $logger = null;
+
+    /**
+     * @var EventDispatcherInterface|null
+     */
+    private $dispatcher = null;
+
+    /**
+     * @var array
+     */
+    private $options;
+
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        AuthenticationManagerInterface $authenticationManager,
+        string $providerKey,
+        string $tokenParam,
+        LoggerInterface $logger = null,
+        EventDispatcherInterface $dispatcher = null,
+        array $options = []
+    ) {
+        $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->providerKey = $providerKey;
         $this->tokenParam = $tokenParam;
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
 
-        $this->options = $options = array_merge(array(
+        $this->options = $options = array_merge([
             'override_already_authenticated' => false,
-        ), $options);
+        ], $options);
     }
 
     /**
-     * @param RequestEvent $event
+     * {@inheritDoc}
      */
-    public function __invoke(RequestEvent $event)
+    public function supports(Request $request): ?bool
+    {
+        return $request->query->has($this->tokenParam) ||
+            $request->attributes->has($this->tokenParam) ||
+            $request->request->has($this->tokenParam);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function authenticate(RequestEvent $event)
     {
         $request = $event->getRequest();
-
-        if ( ! ($this->isTokenInRequest($request))) {
-            return;
-        }
-
         $tokenParam = $request->get($this->tokenParam);
 
         /* If the security context has a token, a user is already authenticated.
          * We will dispatch an event with the token parameter so that a listener
          * may track its usage.
          */
-        if (null !== $this->securityContext->getToken()) {
+        if (null !== $this->tokenStorage->getToken()) {
             if (null !== $this->dispatcher) {
                 $this->dispatcher->dispatch(
                     new AlreadyAuthenticatedEvent($tokenParam),
@@ -95,7 +124,7 @@ class AutoLoginListener
              * implement custom logic to respect our own token class.
              */
             if ($authenticatedToken = $this->authenticationManager->authenticate($token)) {
-                $this->securityContext->setToken($authenticatedToken);
+                $this->tokenStorage->setToken($authenticatedToken);
 
                 if (null !== $this->dispatcher) {
                     $this->dispatcher->dispatch(
@@ -107,24 +136,11 @@ class AutoLoginListener
         } catch (AuthenticationException $e) {
             if (null !== $this->logger) {
                 $this->logger->warning(
-                    'SecurityContext not populated with auto-login token as the '.
+                    'TokenStorage not populated with auto-login token as the '.
                     'AuthenticationManager rejected the auto-login token created '.
                     'by AutoLoginListener: '.$e->getMessage()
                 );
             }
         }
-    }
-
-    /**
-     * Check the ParameterBags consulted by Request::get() for the token.
-     *
-     * @param Request $request
-     * @return boolean
-     */
-    private function isTokenInRequest(Request $request) : bool
-    {
-        return $request->query->has($this->tokenParam) ||
-            $request->attributes->has($this->tokenParam) ||
-            $request->request->has($this->tokenParam);
     }
 }
