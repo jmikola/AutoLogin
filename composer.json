@@ -20,7 +20,7 @@
         "psr-4": { "Jmikola\\AutoLogin\\": "src/" }
     },
     "autoload-dev": {
-        "psr-4": { "Jmikola\\AutoLogin\\Tests\\": "Tests/" }
+        "psr-4": { "Jmikola\\AutoLogin\\Tests\\": "tests/" }
     },
     "extra": {
         "branch-alias": {
@@ -31,6 +31,6 @@
         "symfony/phpunit-bridge": "^5.2"
     },
     "scripts": {
-        "test": "./vendor/bin/simple-phpunit Tests/*"
+        "test": "./vendor/bin/simple-phpunit"
     }
 }
